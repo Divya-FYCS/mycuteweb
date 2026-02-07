@@ -5,8 +5,9 @@
 
     if (!noBtn || !yesBtn) return;
 
-    // 10cm away from cursor (1cm ≈ 37.8px at 96dpi)
-    var MOVE_DISTANCE_CM = 10;
+    // Adaptive distance based on screen size
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    var MOVE_DISTANCE_CM = isMobile ? 5 : 10;
     var MOVE_DISTANCE_PX = MOVE_DISTANCE_CM * 37.8;
 
     function moveNoAway(clientX, clientY) {
@@ -20,12 +21,12 @@
 
         if (dist < 1) return;
 
-        // Move exactly 10cm away from cursor, in the direction away from cursor
+        // Move away from cursor, in the direction away from cursor
         var angle = Math.atan2(dy, dx);
         var newCenterX = noCenterX + Math.cos(angle) * MOVE_DISTANCE_PX;
         var newCenterY = noCenterY + Math.sin(angle) * MOVE_DISTANCE_PX;
 
-        // Keep button within viewport (whole page)
+        // Keep button within viewport
         var margin = 20;
         var minX = noRect.width / 2 + margin;
         var maxX = window.innerWidth - noRect.width / 2 - margin;
@@ -41,7 +42,7 @@
         noBtn.style.top = (newCenterY - noRect.height / 2) + 'px';
     }
 
-    var CURSOR_NEAR_PX = 120;
+    var CURSOR_NEAR_PX = isMobile ? 80 : 120;
 
     function onMouseMove(e) {
         var noRect = noBtn.getBoundingClientRect();
@@ -56,21 +57,50 @@
         }
     }
 
+    function onTouchMove(e) {
+        if (e.touches.length > 0) {
+            var touch = e.touches[0];
+            var noRect = noBtn.getBoundingClientRect();
+            var centerX = noRect.left + noRect.width / 2;
+            var centerY = noRect.top + noRect.height / 2;
+            var dist = Math.sqrt((touch.clientX - centerX) * (touch.clientX - centerX) + (touch.clientY - centerY) * (touch.clientY - centerY));
+
+            if (dist < CURSOR_NEAR_PX) {
+                e.preventDefault();
+                moveNoAway(touch.clientX, touch.clientY);
+            }
+        }
+    }
+
+    function onTouchStart(e) {
+        if (e.touches.length > 0) {
+            var touch = e.touches[0];
+            moveNoAway(touch.clientX, touch.clientY);
+            e.preventDefault();
+        }
+    }
+
     // No button can move anywhere on the page (fixed positioning)
     noBtn.style.position = 'fixed';
     noBtn.style.left = '50%';
     noBtn.style.top = '50%';
     noBtn.style.transform = 'translate(-50%, -50%)';
-    noBtn.style.transition = 'left 0.5s ease-out, top 0.5s ease-out';
+    noBtn.style.transition = isMobile ? 'left 0.3s ease-out, top 0.3s ease-out' : 'left 0.5s ease-out, top 0.5s ease-out';
     noBtn.style.pointerEvents = 'auto';
     noBtn.style.zIndex = 10;
+    noBtn.style.touchAction = 'none';
 
+    // Desktop mouse events
     document.addEventListener('mousemove', onMouseMove);
+
+    // Mobile touch events
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchstart', onTouchStart, { passive: false });
 
     noBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        moveNoAway(e.clientX, e.clientY);
+        moveNoAway(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
         return false;
     });
 
@@ -79,6 +109,21 @@
         e.stopPropagation();
         return false;
     });
+
+    noBtn.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+
+    // Add smooth page transition effect
+    function transitionToPage(url) {
+        document.body.style.transition = 'opacity 0.4s ease-out';
+        document.body.style.opacity = '0';
+        setTimeout(function() {
+            window.location.href = url;
+        }, 400);
+    }
 
     yesBtn.addEventListener('click', function () {
         var overlay = document.getElementById('confirmOverlay');
@@ -94,12 +139,12 @@
 
     if (confirmYesBtn) {
         confirmYesBtn.addEventListener('click', function () {
-            window.location.href = 'success.html';
+            transitionToPage('success.html');
         });
     }
     if (confirmNoBtn) {
         confirmNoBtn.addEventListener('click', function () {
-            window.location.href = 'crying.html';
+            transitionToPage('crying.html');
         });
     }
 })();

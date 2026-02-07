@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
     <meta name="theme-color" content="#ff9a9e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Letter for You 💕</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +16,23 @@
     <div class="container">
         <img src="couple.png" alt="Us" class="letter-gif couple-photo">
         <p class="letter-text">letter for you Yaggu baby ♥️</p>
-        <button class="open-letter-btn" onclick="window.location.href='proposal.html'">Open Letter</button>
+        <button class="open-letter-btn" onclick="handleLetterClick()">Open Letter</button>
     </div>
+    <script>
+        function handleLetterClick() {
+            document.body.style.transition = 'opacity 0.4s ease-out';
+            document.body.style.opacity = '0';
+            setTimeout(function() {
+                window.location.href = 'proposal.html';
+            }, 400);
+        }
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease-in';
+            setTimeout(function() {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
