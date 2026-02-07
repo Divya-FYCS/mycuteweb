@@ -1,26 +1,52 @@
 (function () {
-    var openLetterBtn = document.querySelector('.open-letter-btn');
-    
-    if (openLetterBtn) {
-        // Add smooth page transition
-        openLetterBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.body.style.transition = 'opacity 0.4s ease-out';
-            document.body.style.opacity = '0';
-            setTimeout(function() {
-                window.location.href = 'proposal.html';
-            }, 400);
-        });
+    var yesBtn = document.getElementById('yesBtn');
+    var noBtn = document.getElementById('noBtn');
+    var frame = document.getElementById('buttonsFrame');
+
+    if (!frame || !noBtn || !yesBtn) return;
+
+    function getFrameBounds() {
+        var r = frame.getBoundingClientRect();
+        return {
+            left: r.left,
+            top: r.top,
+            width: r.width,
+            height: r.height
+        };
     }
 
-    // Add entrance animation
-    window.addEventListener('load', function () {
-        document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.6s ease-in';
-        setTimeout(function() {
-            document.body.style.opacity = '1';
-        }, 100);
-    });
+    function moveNoAway(clientX, clientY) {
+        var bounds = getFrameBounds();
+        var noRect = noBtn.getBoundingClientRect();
+        var noCenterX = noRect.left + noRect.width / 2;
+        var noCenterY = noRect.top + noRect.height / 2;
+
+        var dx = clientX - noCenterX;
+        var dy = clientY - noCenterY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 1) return;
+
+        // Move further away when trying to click
+        var moveDist = Math.min(180, Math.max(100, dist * 0.8));
+        var angle = Math.atan2(dy, dx);
+        var newCenterX = noCenterX + Math.cos(angle) * moveDist;
+        var newCenterY = noCenterY + Math.sin(angle) * moveDist;
+
+        var minX = bounds.left + noRect.width / 2;
+        var maxX = bounds.left + bounds.width - noRect.width / 2;
+        var minY = bounds.top + noRect.height / 2;
+        var maxY = bounds.top + bounds.height - noRect.height / 2;
+
+        newCenterX = Math.max(minX, Math.min(maxX, newCenterX));
+        newCenterY = Math.max(minY, Math.min(maxY, newCenterY));
+
+        var leftPx = newCenterX - bounds.left - noRect.width / 2;
+        var topPx = newCenterY - bounds.top - noRect.height / 2;
+
+        noBtn.style.transform = 'none';
+        noBtn.style.left = leftPx + 'px';
+        noBtn.style.top = topPx + 'px';
+    }
 
     var CURSOR_NEAR_PX = 120;
     var isMoving = false;
