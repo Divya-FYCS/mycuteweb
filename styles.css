@@ -1,0 +1,443 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Pixel art font */
+body {
+    font-family: 'Press Start 2P', cursive;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* Page 1: Letter page */
+body.page-letter {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+    padding: 2rem;
+}
+
+.page-letter .container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 90vw;
+}
+
+.letter-gif {
+    width: clamp(200px, 35vw, 400px);
+    height: auto;
+    margin-bottom: 2rem;
+    display: block;
+    animation: bounceLetter 1s ease-in-out infinite;
+}
+
+@keyframes bounceLetter {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.letter-text {
+    font-size: 28px;
+    color: #8b0000;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.open-letter-btn {
+    font-family: 'Press Start 2P', cursive;
+    padding: 1.25rem 2.5rem;
+    font-size: 28px;
+    background: #ff69b4;
+    color: white;
+    border: 4px solid #8b0000;
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 4px 4px 0px #8b0000;
+}
+
+.open-letter-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #8b0000;
+}
+
+.open-letter-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #8b0000;
+}
+
+/* Page 2: Proposal page */
+body.page-proposal {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('background.jpeg') center center / cover no-repeat fixed;
+    position: relative;
+    padding: 2rem;
+    margin: 0;
+}
+
+body.page-proposal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.page-proposal .container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.proposal-title {
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: #fff;
+    margin-bottom: 3rem;
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1.5rem 2rem;
+    border: 4px solid #fff;
+    display: inline-block;
+    line-height: 1.6;
+}
+
+.buttons-frame {
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 2rem;
+
+   
+}
+
+.btn {
+    font-family: 'Press Start 2P', cursive;
+    padding: 1rem 2rem;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    font-weight: normal;
+    border: 4px solid #000;
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 4px 4px 0px #000;
+    background: #fff;
+    color: #000;
+}
+
+.btn-yes {
+    background: #ff69b4;
+    color: #fff;
+    border-color: #8b0000;
+    box-shadow: 4px 4px 0px #8b0000;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-yes:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #8b0000;
+}
+
+.btn-yes:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #8b0000;
+}
+
+.btn-no {
+    background: #dda0dd;
+    color: #000;
+    border-color: #8b0000;
+    box-shadow: 4px 4px 0px #8b0000;
+    position: absolute;
+    transition: left 0.6s ease-out, top 0.6s ease-out;
+    cursor: not-allowed;
+    user-select: none;
+}
+
+.btn-no:hover {
+    transform: none;
+}
+
+/* Confirmation overlay - Are you Sure? */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 1rem;
+}
+
+.confirm-overlay.confirm-overlay-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.confirm-box {
+    background: linear-gradient(135deg, #f8a5c2 0%, #fecfef 100%);
+    border: 4px solid #8b0000;
+    padding: 2rem;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+    max-width: 400px;
+}
+
+.confirm-title {
+    font-size: clamp(0.7rem, 2.5vw, 1rem);
+    color: #8b0000;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-no-static {
+    font-family: 'Press Start 2P', cursive;
+    padding: 1rem 2rem;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    border: 4px solid #8b0000;
+    cursor: pointer;
+    transition: transform 0.1s;
+    box-shadow: 4px 4px 0px #8b0000;
+    background: #dda0dd;
+    color: #000;
+    position: static;
+}
+
+.btn-no-static:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #8b0000;
+}
+
+/* Crying page */
+body.page-crying {
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
+    background: linear-gradient(180deg, #2d1b4e 0%, #1a0a2e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.crying-container {
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+}
+
+.crying-content {
+    background: rgba(255, 255, 255, 0.95);
+    border: 4px solid #4a4a4a;
+    padding: 2rem;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.crying-emoji {
+    font-size: clamp(3rem, 15vw, 5rem);
+    line-height: 1.2;
+}
+
+.crying-title {
+    font-size: clamp(0.7rem, 2.5vw, 1.2rem);
+    color: #333;
+    line-height: 1.6;
+}
+
+.crying-text {
+    font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+    color: #666;
+    line-height: 1.8;
+}
+
+.crying-back {
+    text-decoration: none;
+    margin-top: 0.5rem;
+}
+
+/* Page 3: Success page */
+body.page-success {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f8a5c2 0%, #f093fb 50%, #f8a5c2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    padding: 2rem;
+}
+
+.success-container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 90vw;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-content {
+    background: rgba(255, 255, 255, 0.9);
+    border: 4px solid #8b0000;
+    padding: 2rem;
+    box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.teddy-gif {
+    width: clamp(200px, 40vw, 400px);
+    height: auto;
+    margin: 0 auto 2rem auto;
+    display: block;
+    order: -1;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    animation: floatTeddy 3s ease-in-out infinite;
+}
+
+@keyframes floatTeddy {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.success-title {
+    font-size: clamp(0.7rem, 2vw, 1.2rem);
+    color: #8b0000;
+    line-height: 1.8;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .buttons-frame {
+        min-height: 120px;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+    
+    .proposal-title {
+        padding: 1rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .success-content {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .letter-symbol {
+        font-size: 5rem;
+    }
+    
+    .letter-text {
+        font-size: 18px;
+    }
+    
+    .open-letter-btn {
+        font-size: 18px;
+        padding: 1rem 1.5rem;
+    }
+    
+    .proposal-title {
+        font-size: 0.8rem;
+        padding: 0.8rem 1rem;
+    }
+    
+    .success-title {
+        font-size: 0.6rem;
+    }
+
+    .confirm-box {
+        padding: 1.5rem;
+    }
+
+    .confirm-title {
+        font-size: 0.65rem;
+    }
+
+    .confirm-buttons {
+        gap: 0.75rem;
+    }
+
+    .crying-content {
+        padding: 1.5rem;
+    }
+
+    .crying-title {
+        font-size: 0.65rem;
+    }
+}
+
+/* Touch-friendly and mobile */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .open-letter-btn,
+    .btn-no-static {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Prevent zoom on input focus on iOS */
+@supports (-webkit-touch-callout: none) {
+    body {
+        min-height: -webkit-fill-available;
+    }
+}
